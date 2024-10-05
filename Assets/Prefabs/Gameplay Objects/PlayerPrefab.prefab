@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2483580551058806749}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1.75, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3254259405369096299}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &6278676466489749295
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,6 +127,7 @@ GameObject:
   - component: {fileID: 721968406157968825}
   - component: {fileID: 1310044208969089826}
   - component: {fileID: 5662126810362399283}
+  - component: {fileID: 3725853255571438962}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -253,6 +254,39 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &3725853255571438962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8568225839874794892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 3436567619241103842}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &8798700741942025419
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,10 +297,11 @@ GameObject:
   m_Component:
   - component: {fileID: 7824880984311784673}
   - component: {fileID: 3979505646008226980}
-  - component: {fileID: 3117139621168353181}
+  - component: {fileID: -2412841052315260156}
   - component: {fileID: 4327413725715833482}
   - component: {fileID: 2658673343003297719}
-  m_Layer: 0
+  - component: {fileID: 2190132463695062863}
+  m_Layer: 8
   m_Name: PlayerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,7 +342,7 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &3117139621168353181
+--- !u!114 &-2412841052315260156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -352,6 +387,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 517968c8bd4e4494da9cb9db325b4c6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   _movementSpeed: 10
   _mouseSensevity: 100
   _camera: {fileID: 3436567619241103842}
@@ -372,6 +410,9 @@ MonoBehaviour:
     Material: {fileID: 2100000, guid: 6f5e4eb425087f345aa4d1ba7a64cff1, type: 2}
   - Color: 98
     Material: {fileID: 2100000, guid: 4c29c0b397a1ec342a3fdaf1454a6be8, type: 2}
+  _shootPoint: {fileID: 5884523293278757007}
+  _minPower: 5
+  _maxPower: 50
 --- !u!54 &2658673343003297719
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -398,7 +439,28 @@ Rigidbody:
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 116
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
+--- !u!65 &2190132463695062863
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8798700741942025419}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2, y: 2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0.5}
 --- !u!1 &8917046222323105476
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +473,7 @@ GameObject:
   - component: {fileID: 5635025930181250470}
   - component: {fileID: 8772722612435948443}
   - component: {fileID: 2358001343187982518}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,7 +560,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

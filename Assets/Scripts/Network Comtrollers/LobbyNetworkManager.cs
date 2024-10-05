@@ -35,7 +35,6 @@ public class LobbyNetworkManager : NetworkManager
         NetworkServer.AddPlayerForConnection(conn, player);
     }
 
-
     public override void OnServerConnect(NetworkConnectionToClient connection)
     {
         _connectedPlayers.Add(new ConnectedPlayer(connection, ' ', false));
