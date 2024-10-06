@@ -11,7 +11,7 @@ public class LobbyNetworkManager : NetworkManager
     [Tooltip("Char is indicate color and transform is relatiable spawn point")]
     List<SpawnPoint> _spawnPoints;
 
-    private readonly List<ConnectedPlayer> _connectedPlayers = new();
+    public Dictionary<NetworkConnectionToClient, char> ActivePlayers = new();
 
     public override void OnStartServer()
     {
@@ -20,36 +20,39 @@ public class LobbyNetworkManager : NetworkManager
 
     public override void OnStopServer()
     {
-        _connectedPlayers.Clear();
+        ActivePlayers.Clear();
     }
 
-    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    public override void OnServerAddPlayer(NetworkConnectionToClient connection)
     {
-        char color = _connectedPlayers.Find(player => player.Connection == conn).Color;
+        if (ActivePlayers.TryGetValue(connection, out char color))
+        {
+            Transform startTransform = _spawnPoints.Find(spawnPoint => spawnPoint.Color == color).SpawnTransform;
 
-        Transform startTransform = _spawnPoints.Find(spawnPoint => spawnPoint.Color == color).SpawnTransform;
+            GameObject player = Instantiate(playerPrefab, startTransform.position, startTransform.rotation);
 
-        GameObject player = Instantiate(playerPrefab, startTransform.position, startTransform.rotation);
-
-        player.name = color.ToString();
-        NetworkServer.AddPlayerForConnection(conn, player);
+            player.name = color.ToString();
+            NetworkServer.AddPlayerForConnection(connection, player);
+        }
     }
 
-    public override void OnServerConnect(NetworkConnectionToClient connection)
+    public override void OnServerDisconnect(NetworkConnectionToClient connection)
     {
-        _connectedPlayers.Add(new ConnectedPlayer(connection, ' ', false));
-
+        if(ActivePlayers.TryGetValue(connection, out char color))
+        {
+            ActivePlayers.Remove(connection);
+            NetworkServer.RemovePlayerForConnection(connection, RemovePlayerOptions.Destroy);
+        }
     }
+    
 
     private void OnReadyRequest(NetworkConnectionToClient connection, ReadyRequest readyRequest)
     {
-        bool accepted = !_connectedPlayers.Any(player => player.Color == readyRequest.Color);
+        bool accepted = !ActivePlayers.Any(x => x.Value == readyRequest.Color);
 
         if (accepted)
         {
-            int index = _connectedPlayers.FindIndex(player => player.Connection == connection);
-            _connectedPlayers[index].Color = readyRequest.Color;
-            _connectedPlayers[index].IsReady = true;
+            ActivePlayers.Add(connection, readyRequest.Color);
         }
 
         connection.Send(new ReadyResponse(accepted));

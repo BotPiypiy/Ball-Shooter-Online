@@ -13,7 +13,7 @@ public class Ball : MonoBehaviour
     private Coroutine _liveCo;
 
     [HideInInspector]
-    public PlayerController owner;
+    public PlayerController Owner;
 
     private void Awake()
     {
@@ -23,6 +23,7 @@ public class Ball : MonoBehaviour
     private void OnEnable()
     {
         _rb.velocity = Vector3.zero;
+        Owner = null;
         _liveCo = StartCoroutine(LiveCoroutine());
     }
 
@@ -35,12 +36,13 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.transform.parent.TryGetComponent(out PlayerController player))
+        if (other.gameObject.transform.parent.TryGetComponent(out PlayerController otherPlayer) && Owner != null)
         {
+            Owner.Hit();
+            otherPlayer.Hitted();
             DestroySelf();
         }
     }
-
 
     [Server]
     private void DestroySelf()

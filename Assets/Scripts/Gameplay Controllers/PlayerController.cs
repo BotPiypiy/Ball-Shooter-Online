@@ -1,6 +1,7 @@
 using Mirror;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -51,25 +52,44 @@ public class PlayerController : NetworkBehaviour
     private float _currentXRotation = 0f;
     private float _currentYRotation = 0f;
 
+    [SerializeField]
+    private TMP_Text _scoreTMP;
+
+    [SyncVar(hook = nameof(SetScore))]
+    private int _score = 0;
+
     [SyncVar(hook = nameof(SetName))]
     private string _name;
 
     void Start()
     {
-        Application.targetFrameRate = 60;
         _name = gameObject.name;
 
         ApplyName(_name);
+
+        if (isLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void Update()
     {
         if (this.isLocalPlayer)
         {
-            MovementUpdate(Time.deltaTime);
-            CameraMovementUpdate(Time.deltaTime);
-            TryShoot(Time.deltaTime);
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                MovementUpdate(Time.deltaTime);
+                CameraMovementUpdate(Time.deltaTime);
+                TryShoot(Time.deltaTime);
+            }
+            CursorUpdate();
         }
+    }
+
+    private void SetScore(int _, int newScore)
+    {
+        _scoreTMP.text = newScore.ToString();
     }
 
     private void SetName(string _, string newName)
@@ -95,7 +115,7 @@ public class PlayerController : NetworkBehaviour
     private void MovementUpdate(float deltaTime)
     {
         float x = Input.GetAxis("Horizontal") * _movementSpeed * deltaTime;
-        _rigidbody.position += transform.right * x;
+        _rigidbody.MovePosition(_rigidbody.position + transform.right * x);
     }
 
 
@@ -134,6 +154,31 @@ public class PlayerController : NetworkBehaviour
         ball.name = name;
         NetworkServer.Spawn(ball);
         ball.GetComponent<Rigidbody>().AddForce(power, ForceMode.Impulse);
+        ball.GetComponent<Ball>().Owner = this;
+    }
+
+    private void CursorUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cursor.lockState = Cursor.lockState == CursorLockMode.Locked
+                ? CursorLockMode.None
+                : CursorLockMode.Locked;
+        }
+    }
+
+    [Server]
+    public void Hit()
+    {
+        ++_score;
+        _scoreTMP.text = _score.ToString();
+    }
+
+    [Server]
+    public void Hitted()
+    {
+        --_score;
+        _scoreTMP.text = _score.ToString();
     }
 }
 

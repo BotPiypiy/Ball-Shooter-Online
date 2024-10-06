@@ -1991,6 +1991,7 @@ MonoBehaviour:
   _lobbyPanel: {fileID: 1589808461}
   _ip: {fileID: 2125271092}
   _port: {fileID: 246247405}
+  _disconnectButton: {fileID: 1101613599}
   _colorPickPanel: {fileID: 757557958}
   _readyButton: {fileID: 1234016251}
   _redToggle: {fileID: 1531104188}
