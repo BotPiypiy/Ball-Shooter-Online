@@ -13,7 +13,7 @@ public class BallPool : MonoBehaviour
 
     private Pool<GameObject> _pool;
 
-    void Start()
+    private void Start()
     {
         if(Instance != null)
         {
@@ -25,20 +25,20 @@ public class BallPool : MonoBehaviour
         NetworkClient.RegisterPrefab(_ball, SpawnHandler, UnspawnHandler);
     }
 
-    GameObject SpawnHandler(SpawnMessage msg) => Get(msg.position, msg.rotation);
-    void UnspawnHandler(GameObject spawned) => Return(spawned);
+    private GameObject SpawnHandler(SpawnMessage msg) => Get(msg.position, msg.rotation);
+    private void UnspawnHandler(GameObject spawned) => Return(spawned);
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         NetworkClient.UnregisterPrefab(_ball);
     }
 
-    void InitializePool()
+    private void InitializePool()
     {
         _pool = new Pool<GameObject>(CreateNew, 50);
     }
 
-    GameObject CreateNew()
+    private GameObject CreateNew()
     {
         GameObject next = Instantiate(_ball, transform);
         next.SetActive(false);

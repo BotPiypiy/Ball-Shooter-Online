@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+ 
+    public PlayerController Owner { get => _owner; set => _owner = value; }
+    private PlayerController _owner;
+
     [SerializeField]
     private float _liveTime;
 
     private Rigidbody _rb;
 
     private Coroutine _liveCo;
-
-    [HideInInspector]
-    public PlayerController Owner;
 
     private void Awake()
     {
@@ -23,7 +24,7 @@ public class Ball : MonoBehaviour
     private void OnEnable()
     {
         _rb.velocity = Vector3.zero;
-        Owner = null;
+        _owner = null;
         _liveCo = StartCoroutine(LiveCoroutine());
     }
 
@@ -36,9 +37,9 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.transform.parent.TryGetComponent(out PlayerController otherPlayer) && Owner != null)
+        if (other.gameObject.transform.parent.TryGetComponent(out PlayerController otherPlayer) && _owner != null)
         {
-            Owner.Hit();
+            _owner.Hit();
             otherPlayer.Hitted();
             DestroySelf();
         }

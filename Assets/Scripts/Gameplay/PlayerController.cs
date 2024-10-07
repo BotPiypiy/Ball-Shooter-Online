@@ -7,6 +7,13 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
+    [Serializable]
+    private struct ColorMaterial
+    {
+        public char Color;
+        public Material Material;
+    }
+
     [SerializeField]
     [Min(1f)]
     private float _movementSpeed = 10f;
@@ -61,7 +68,7 @@ public class PlayerController : NetworkBehaviour
     [SyncVar(hook = nameof(SetName))]
     private string _name;
 
-    void Start()
+    private void Start()
     {
         _name = gameObject.name;
 
@@ -73,7 +80,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         if (this.isLocalPlayer)
         {
@@ -180,13 +187,4 @@ public class PlayerController : NetworkBehaviour
         --_score;
         _scoreTMP.text = _score.ToString();
     }
-}
-
-[Serializable]
-public struct ColorMaterial
-{
-    [SerializeField]
-    public char Color;
-    [SerializeField]
-    public Material Material;
 }
